@@ -16,7 +16,7 @@ layout = [  [sg.Text('Wolf Editor Desktop')],
 def errorMessage(title, message):
     elayout = [[sg.Text(message)], # Create the main text for the error message.
     [sg.Button('Dismiss')]]
-    ewindow = sg.Window(title, elayout) # Create the error message window
+    ewindow = sg.Window(title, elayout, icon='icon.ico') # Create the error message window
 
     while True:
         eevent, evalues = ewindow.read()
@@ -37,11 +37,11 @@ while True:
         break
     
     if event == 'About': # of user clicks about:
-        alayout = [  [sg.Text('Wolf Editor Desktop is the offline, self-contained version of Wolf Editor.\nWolf editor is a simple text editor creted by Barry Piel (a.k.a Focal Fossa).\nYou are running version 1.2 Check the changelog.txt file for a list of all new changes.')],
+        alayout = [  [sg.Text('Wolf Editor Desktop is the offline, self-contained version of Wolf Editor.\nWolf editor is a simple text editor creted by Barry Piel (a.k.a Focal Fossa).\nYou are running version 1.2.1 Check the changelog.txt file for a list of all new changes.')],
             [sg.Button('Dismiss')]
         ] # Create our about window layout
 
-        awindow = sg.Window('Wolf Editor About', alayout) # Create the window
+        awindow = sg.Window('Wolf Editor About', alayout, icon='icon.ico') # Create the window
 
         while True:
             aevent, avalues = awindow.read()
@@ -55,7 +55,7 @@ while True:
                 [sg.Button('No'), sg.Button('Yes')]
             ] # Setup the layout for the new quit conformation window
 
-        qwindow = sg.Window('Really Quit?', qlayout) # Create the quit conformation window
+        qwindow = sg.Window('Really Quit?', qlayout, icon='icon.ico') # Create the quit conformation window
         
         while True:
             qevent, qvalues = qwindow.read()
@@ -72,7 +72,7 @@ while True:
             [sg.Button('No'), sg.Button('Yes')]
         ] # Setup the layout for the new new file conformation window
 
-        nwindow = sg.Window('Make a new file?', nlayout) # Create the new file conformation window
+        nwindow = sg.Window('Make a new file?', nlayout, icon='icom.ico') # Create the new file conformation window
 
         while True:
             
