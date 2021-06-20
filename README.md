@@ -1,2 +1,4 @@
 # wolf-editor-desktop
-Desktop of Wolf Editor
+Desktop version of Wolf Editor
+
+I need to update this later
