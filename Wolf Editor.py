@@ -1,6 +1,8 @@
 import PySimpleGUI as sg
 import os
 import sys
+import codecs
+import io
 
 from PySimpleGUI.PySimpleGUI import InputText, WIN_CLOSED, WIN_CLOSE_ATTEMPTED_EVENT, WIN_X_EVENT
 
@@ -37,7 +39,7 @@ while True:
         break
     
     if event == 'About': # of user clicks about:
-        alayout = [  [sg.Text('Wolf Editor Desktop is the offline, self-contained version of Wolf Editor.\nWolf editor is a simple text editor creted by Barry Piel (a.k.a Focal Fossa).\nYou are running version 1.2.1 Check the changelog.txt file for a list of all new changes.')],
+        alayout = [  [sg.Text('Wolf Editor Desktop is the offline, self-contained version of Wolf Editor.\nWolf editor is a simple text editor creted by Barry Piel (a.k.a Focal Fossa).\nYou are running version 1.4 Check the changelog.txt file for a list of all new changes.')],
             [sg.Button('Dismiss')]
         ] # Create our about window layout
 
@@ -72,7 +74,7 @@ while True:
             [sg.Button('No'), sg.Button('Yes')]
         ] # Setup the layout for the new new file conformation window
 
-        nwindow = sg.Window('Make a new file?', nlayout, icon='icom.ico') # Create the new file conformation window
+        nwindow = sg.Window('Make a new file?', nlayout, icon='icon.ico') # Create the new file conformation window
 
         while True:
             
@@ -97,15 +99,31 @@ while True:
             errorMessage('Warning', 'You cannot save a file without specifying a file path.')
         else:
             if os.path.exists(filePathToSave):
-                loaded_file = open(filePathToSave, 'w')
-                loaded_file.write(values['MainDocument'])
-                loaded_file.close()
-                errorMessage('Wolf Editor', 'Successfully saved file') 
+                ovlayout = [  [sg.Text('The file you are trying to save already exists. Do you want to replace it?')],
+            [sg.Button('No'), sg.Button('Yes')]
+        ] # Setup the layout for the iverwrite file conformation window
+
+                ovwindow = sg.Window('Make a new file?', ovlayout, icon='icon.ico') # Create the overwrite file conformation window
+
+                while True:
+                    
+                    ovevent, ovvalues = ovwindow.read()
+
+                    if ovevent == 'Yes': # When the user says yes to overwriting
+                        loaded_file = open(filePathToSave, 'w')
+                        loaded_file.write(values['MainDocument'])
+                        loaded_file.close()
+                        ovwindow.close()
+                        errorMessage('Wolf Editor', 'Successfully saved file')
+                        break
+                    if ovevent == sg.WIN_CLOSED or ovevent == 'No': # When the user says no to making a new file
+                        break
+                ovwindow.close() 
             
             else:
                 print('The file does not exist, create new file before continue')
                 os.system('echo "" > ' + filePathToSave)
-                loaded_file = open(filePathToSave, 'w')
+                loaded_file = io.open(filePathToSave, 'w', encoding="utf8")
                 loaded_file.write(values['MainDocument'])
                 loaded_file.close()
                 errorMessage('Wolf Editor', 'Successfully saved file')
@@ -117,7 +135,7 @@ while True:
             errorMessage('Warning', 'You cannot load a file without specifying a file path.')
         else:
             if os.path.exists(filePathToLoad):
-                loaded_file = open(filePathToLoad, 'r')
+                loaded_file = io.open(filePathToLoad, 'r', encoding="utf8")
                 loaded_file_data = loaded_file.read()
                 window.FindElement('MainDocument').Update(loaded_file_data)
                 window.FindElement('savePath').Update(filePathToLoad)
