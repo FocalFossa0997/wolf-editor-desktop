@@ -1,16 +1,20 @@
+# PLEASE TAKE NOTE: THIS CODE IS BROKEN, FIX IT!!!
+
 import PySimpleGUI as sg
 import os
 import sys
 import codecs
 import io
+import time
+import threading
 
 from PySimpleGUI.PySimpleGUI import InputText, WIN_CLOSED, WIN_CLOSE_ATTEMPTED_EVENT, WIN_X_EVENT
-
+# Setup the main editor window
 print('Attempting to setup the window...')
 sg.theme('DarkGrey9')   # Add a touch of color
 # All the stuff inside your window.
 layout = [  [sg.Text('Wolf Editor Desktop')],
-            [sg.Button('New'), sg.InputText(key='savePath'), sg.Button('Save'), sg.InputText(key='loadPath'), sg.Button('Load'), sg.Button('About'), sg.Button('Found a bug?'), sg.Button('Quit')],
+            [sg.Button('New'), sg.InputText(key='savePath'), sg.Button('Save'), sg.InputText(key='loadPath'), sg.Button('Load'), sg.Button('About'), sg.Button("Changelog"), sg.Button('Found a bug?'), sg.Button('Quit')],
             [sg.Multiline(size=(158, 42), key='MainDocument')]
 ]
 
@@ -27,10 +31,11 @@ def errorMessage(title, message):
     
     ewindow.close()
 
-# Create the Window
+
 print('Creating the window.')
 window = sg.Window('Wolf Editor Desktop', layout, icon='icon.ico')
 # Event Loop to process 'events' and get the 'values' of the inputs
+
         
 while True:    
     event, values = window.read()
@@ -39,7 +44,7 @@ while True:
         break
     
     if event == 'About': # of user clicks about:
-        alayout = [  [sg.Text('Wolf Editor Desktop is the offline, self-contained version of Wolf Editor.\nWolf editor is a simple text editor creted by Barry Piel (a.k.a Focal Fossa).\nYou are running version 1.4 Check the changelog.txt file for a list of all new changes.')],
+        alayout = [  [sg.Text('Wolf Editor Desktop is the offline, self-contained version of Wolf Editor.\nWolf editor is a simple text editor creted by Barry Piel (a.k.a Focal Fossa).\nYou are running version 1.5 Check the changelog.txt file for a list of all new changes.')],
             [sg.Button('Dismiss')]
         ] # Create our about window layout
 
@@ -93,9 +98,9 @@ while True:
         errorMessage('Found a bug?', 'Report it on the `issues` part Wolf Editor`s github page.')
     
     if event == 'Save':
-        filePathToSave = values['savePath']
+        filePathToSave = "../WolfEditorDocuments/" + values['savePath'] # There needs to be two \ characters, because python will freak out if only one \ is used.
         
-        if filePathToSave == '':
+        if filePathToSave == '../WolfEditorDocuments/':
             errorMessage('Warning', 'You cannot save a file without specifying a file path.')
         else:
             if os.path.exists(filePathToSave):
@@ -110,7 +115,7 @@ while True:
                     ovevent, ovvalues = ovwindow.read()
 
                     if ovevent == 'Yes': # When the user says yes to overwriting
-                        loaded_file = open(filePathToSave, 'w')
+                        loaded_file = open(filePathToSave, 'w', encoding="utf8")
                         loaded_file.write(values['MainDocument'])
                         loaded_file.close()
                         ovwindow.close()
@@ -129,21 +134,35 @@ while True:
                 errorMessage('Wolf Editor', 'Successfully saved file')
 
     if event == 'Load':
-        filePathToLoad = values['loadPath']
+        filePathToLoad = "../WolfEditorDocuments/" + values['loadPath']
         
-        if filePathToLoad == '':
+        if filePathToLoad == '../WolfEditorDocuments/':
             errorMessage('Warning', 'You cannot load a file without specifying a file path.')
         else:
             if os.path.exists(filePathToLoad):
                 loaded_file = io.open(filePathToLoad, 'r', encoding="utf8")
                 loaded_file_data = loaded_file.read()
                 window.FindElement('MainDocument').Update(loaded_file_data)
-                window.FindElement('savePath').Update(filePathToLoad)
+                #window.FindElement('savePath').Update(filePathToLoad)
                 loaded_file.close()
                 errorMessage('Wolf Editor', 'Successfully loaded file')
             
             else:
                 errorMessage('Warning', 'The file you`re trying to load does not exist.')
-            
+
+    if event == 'Changelog':
+        filePathToLoad = "Allchanges/Changelog.txt"
+
+        if os.path.exists(filePathToLoad):
+            loaded_file = io.open(filePathToLoad, 'r', encoding="utf8")
+            loaded_file_data = loaded_file.read()
+            window.FindElement('MainDocument').Update(loaded_file_data)
+            #window.FindElement('savePath').Update(filePathToLoad)
+            loaded_file.close()
+            errorMessage('Wolf Editor', 'Successfully loaded file')
+        
+        else:
+            errorMessage('Warning', 'The changelog file does not exist.')
+        
 
 window.close()
