@@ -1,3 +1,6 @@
+# THIS REPOSITORY IS DISCONTINUED, USE THIS ONE INSTEAD:  
+https://github.com/focalfossa0997/wolf-editor
+
 # wolf-editor-desktop
 Wolf Editor is a basic text editor that aims to be aims to be easy to use and lightweight. Currently, the editor only has some basic functions, but I plan on adding a lot more in the near future.  
 
